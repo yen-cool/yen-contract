@@ -5,6 +5,12 @@ export interface MintEvent {
   index: BigNumber;
 }
 
+export interface ListenMintEvent {
+  person: string;
+  index: BigNumber;
+  msg: any;
+}
+
 export interface ClaimEvent {
   person: string;
   amount: BigNumber;

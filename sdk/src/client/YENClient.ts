@@ -163,7 +163,7 @@ export class YENClient implements IYENClient {
     this._beforeTransaction();
     const transaction = await this._contract.mint({
       ...config,
-      gasLimit:200000
+      gasLimit: 200000
     });
     this._afterTransaction(transaction, callback);
   }
@@ -268,5 +268,41 @@ export class YENClient implements IYENClient {
       }
     );
     this._afterTransaction(transaction, callback);
+  }
+
+  /* ================ UTILS FUNCTIONS ================ */
+
+  async listenMintEvent(callback: Function): Promise<void> {
+    this._beforeTransaction();
+    this._contract.on(this._contract.filters.Mint(), (...args) => {
+      const mintEvent: YENModel.ListenMintEvent = {
+        person: args[0],
+        index: args[1],
+        msg: args[2]
+      };
+      callback(mintEvent);
+    });
+  }
+
+  async getMintEventList(
+    from: number,
+    to: number,
+    person?: string
+  ): Promise<Array<YENModel.ListenMintEvent>> {
+    this._beforeTransaction();
+    const res = await this._contract.queryFilter(
+      this._contract.filters.Mint(person),
+      from,
+      to
+    );
+    const events: Array<YENModel.ListenMintEvent> = [];
+    res.forEach(mintEventList => {
+      events.push({
+        person: mintEventList.args[0],
+        index: mintEventList.args[1],
+        msg: mintEventList
+      });
+    });
+    return events;
   }
 }

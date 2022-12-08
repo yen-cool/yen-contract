@@ -96,4 +96,14 @@ export interface IYENClient {
     config?: PayableOverrides,
     callback?: Function
   ): Promise<void>;
+
+  /* ================ UTILS FUNCTIONS ================ */
+
+  listenMintEvent(callback: Function): Promise<void>;
+
+  getMintEventList(
+    from: number,
+    to: number,
+    person?: string
+  ): Promise<Array<YENModel.ListenMintEvent>>;
 }
